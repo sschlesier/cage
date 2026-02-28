@@ -2,11 +2,12 @@
 # cage — run Claude Code in an isolated Apple container (VM-level isolation)
 #
 # USAGE
-#   cage [claude-args]     Run Claude from the current directory
+#   cage [prompt|claude-args]   Run Claude from the current directory
 #
 # EXAMPLES
 #   cd ~/projects/my-app && cage
-#   cage --resume
+#   cage "do x y z"             # start with a prompt
+#   cage --resume               # resume last session
 #
 # FIRST TIME SETUP
 #   1. brew install container
