@@ -65,6 +65,9 @@ fi
 
 exec container run $TTY_FLAG --rm \
   --name "$CAGE_NAME" \
+  --init \
+  --memory 4G \
+  --cpus 2 \
   --volume "$(pwd):/home/claude/workspace" \
   --volume "claude-creds:/home/claude/.claude" \
   --volume "$HOME/.claude:/tmp/.claude-host:ro" \
