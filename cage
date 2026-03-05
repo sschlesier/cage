@@ -63,7 +63,13 @@ if [ ! -t 0 ]; then
   TTY_FLAG="-i"
 fi
 
-exec container run $TTY_FLAG --rm \
+# Green tab = caged; reset on exit
+if [ -n "$KITTY_WINDOW_ID" ]; then
+  kitty @ set-tab-color active_bg=#003300 active_fg=#00ff88 inactive_bg=#001a00 inactive_fg=#005500 2>/dev/null || true
+  trap 'kitty @ set-tab-color active_bg=NONE active_fg=NONE inactive_bg=NONE inactive_fg=NONE 2>/dev/null || true' EXIT
+fi
+
+container run $TTY_FLAG --rm \
   --name "$CAGE_NAME" \
   --init \
   --memory 4G \
