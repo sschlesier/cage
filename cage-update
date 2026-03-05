@@ -42,6 +42,7 @@ fi
 echo "Rebuilding claude-isolated with latest claude-code..."
 container build \
   --tag claude-isolated \
+  --build-arg CLAUDE_VERSION="$LATEST" \
   "$SCRIPT_DIR"
 
 echo "Done. Current version:"
