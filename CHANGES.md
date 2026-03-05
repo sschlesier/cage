@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.2 (2026-03-04)
+
+- Fix: cache bust the Claude version during image builds to ensure the latest `@anthropic-ai/claude-code` is always installed
+
 ## v0.2.1 (2026-03-04)
 
 - Add init process and resource limits to container run
