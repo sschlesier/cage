@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1 (2026-03-04)
+
+- Add init process and resource limits to container run
+
 ## v0.2.0 (2026-02-28)
 
 - Support stdin piping — cage no longer forces a TTY when stdin is not a terminal, enabling use in pipelines
