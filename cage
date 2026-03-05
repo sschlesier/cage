@@ -22,7 +22,7 @@
 # HOW IT WORKS
 #   - Each container is a lightweight Linux VM (Apple Virtualization Framework)
 #   - pwd is mounted at /home/claude/workspace — nothing else on your Mac is visible
-#   - Credentials persist in the 'claude-creds' container volume
+#   - Credentials persist in ~/.local/share/cage/creds on the host
 #   - Your ~/.claude config (CLAUDE.md, settings, commands, skills) is synced in read-only
 #   - GIT_AUTHOR/COMMITTER name+email are passed as env vars for correct commit identity
 #   - Runs as non-root with --dangerously-skip-permissions
@@ -58,6 +58,9 @@ while container list 2>/dev/null | grep -qw "$CAGE_NAME"; do
   SUFFIX=$((SUFFIX + 1))
 done
 
+CREDS_DIR="$HOME/.local/share/cage/creds"
+mkdir -p "$CREDS_DIR"
+
 TTY_FLAG="-it"
 if [ ! -t 0 ]; then
   TTY_FLAG="-i"
@@ -75,7 +78,7 @@ container run $TTY_FLAG --rm \
   --memory 4G \
   --cpus 2 \
   --volume "$(pwd):/home/claude/workspace" \
-  --volume "claude-creds:/home/claude/.claude" \
+  --volume "$CREDS_DIR:/home/claude/.claude" \
   --volume "$HOME/.claude:/tmp/.claude-host:ro" \
   $WORKTREE_MOUNT \
   --env TERM \
