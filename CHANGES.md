@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.0 (2026-03-05)
+
+- Use host directory for credentials instead of named volume
+- Color Kitty tab green while cage is running
+
 ## v0.2.2 (2026-03-04)
 
 - Fix: cache bust the Claude version during image builds to ensure the latest `@anthropic-ai/claude-code` is always installed
