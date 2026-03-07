@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git *), Bash(gh *), Bash(curl *), Bash(shasum *), Bash(date *), Bash(rm *), Read, Edit, Write, AskUserQuestion
+allowed-tools: Bash(git *), Bash(gh *), Bash(curl *), Bash(shasum *), Bash(date *), Bash(rm *), Read, Read(../homebrew-tap/**), Edit, Edit(../homebrew-tap/**), Write, AskUserQuestion
 ---
 
 # Release cage
