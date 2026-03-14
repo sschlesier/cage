@@ -29,6 +29,12 @@
 
 set -e
 
+# Ensure container system is running
+if ! container system status 2>/dev/null | grep -q 'status.*running'; then
+  echo "Container system not running. Starting..." >&2
+  container system start
+fi
+
 # If we're inside a git worktree, also mount the main .git dir at its original
 # absolute path so git can follow the worktree's gitdir pointer and commit.
 WORKTREE_MOUNT=""

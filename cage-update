@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Ensure container system is running
+if ! container system status 2>/dev/null | grep -q 'status.*running'; then
+  echo "Container system not running. Starting..." >&2
+  container system start
+fi
+
 # Find the Dockerfile.
 # Homebrew installs scripts to bin/ and data files to share/cage/ (one level up).
 # For dev installs, the Dockerfile sits alongside this script.

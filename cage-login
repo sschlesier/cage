@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Ensure container system is running
+if ! container system status 2>/dev/null | grep -q 'status.*running'; then
+  echo "Container system not running. Starting..." >&2
+  container system start
+fi
+
 CREDS_DIR="$HOME/.local/share/cage/creds"
 mkdir -p "$CREDS_DIR"
 

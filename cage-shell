@@ -7,6 +7,12 @@
 
 set -e
 
+# Ensure container system is running
+if ! container system status 2>/dev/null | grep -q 'status.*running'; then
+  echo "Container system not running. Starting..." >&2
+  container system start
+fi
+
 # Derive expected container name from repo and git branch (or directory names)
 REPO=$(basename "$(git -C "$(pwd)" rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null)
 if [ -z "$REPO" ]; then
