@@ -50,7 +50,7 @@ REPO=$(basename "$(git -C "$(pwd)" rev-parse --show-toplevel 2>/dev/null)" 2>/de
 if [ -z "$REPO" ]; then
   REPO=$(basename "$(pwd)")
 fi
-BRANCH=$(git -C "$(pwd)" branch --show-current 2>/dev/null)
+BRANCH=$(git -C "$(pwd)" branch --show-current 2>/dev/null || true)
 if [ -z "$BRANCH" ]; then
   BRANCH=$(basename "$(pwd)")
 fi
