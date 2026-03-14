@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.0 (2026-03-14)
+
+- Auto-start container system if not already running
+- Share host Claude state (config, skills, plugins) with caged Claude via config-driven mounts
+- Fix silent exit when run outside a git repository
+
 ## v0.3.0 (2026-03-05)
 
 - Use host directory for credentials instead of named volume
