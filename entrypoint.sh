@@ -24,4 +24,14 @@ node -e "
   fs.writeFileSync('$SETTINGS', JSON.stringify(s, null, 2) + '\n');
 "
 
+# Bridge path-encoding mismatch: symlink the container's encoded path to the host's
+if [ -n "$HOST_CWD" ]; then
+  HOST_ENCODED="$(echo "$HOST_CWD" | sed 's|/|-|g')"
+  CONTAINER_ENCODED="-home-claude-workspace"
+  if [ "$HOST_ENCODED" != "$CONTAINER_ENCODED" ]; then
+    mkdir -p "$HOME/.claude/projects/$HOST_ENCODED"
+    ln -sfn "$HOME/.claude/projects/$HOST_ENCODED" "$HOME/.claude/projects/$CONTAINER_ENCODED"
+  fi
+fi
+
 exec "$@"

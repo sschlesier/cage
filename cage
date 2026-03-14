@@ -61,6 +61,57 @@ done
 CREDS_DIR="$HOME/.local/share/cage/creds"
 mkdir -p "$CREDS_DIR"
 
+# Read extra mounts from config file
+EXTRA_MOUNTS=()
+MOUNTS_CONF="$HOME/.config/cage/mounts"
+HOST_PROJECT_ENCODED="$(pwd | sed 's|/|-|g')"
+
+if [ ! -f "$MOUNTS_CONF" ]; then
+  mkdir -p "$(dirname "$MOUNTS_CONF")"
+  cat > "$MOUNTS_CONF" <<'EOF'
+# Host directories to mount into the cage container.
+# To reset to defaults, delete this file — cage will recreate it.
+# Format: MODE  PATH
+#
+# MODE: rw (read-write) or ro (read-only)
+# PATH: host path relative to ~ (mapped to same path under /home/claude in container)
+#
+# Variable expansion:
+#   {project}  — encoded project directory (e.g. -Users-scotts-src-cage)
+#
+# Directories are created automatically if they don't exist.
+# Lines starting with # and blank lines are ignored.
+
+# Project memories and session transcripts (scoped to current project only)
+rw  ~/.claude/projects/{project}
+
+# Plans
+rw  ~/.claude/plans
+EOF
+fi
+
+while IFS= read -r line || [ -n "$line" ]; do
+  line="$(echo "$line" | sed 's/#.*//' | xargs)"
+  [ -z "$line" ] && continue
+
+  mode="$(echo "$line" | awk '{print $1}')"
+  host_path="$(echo "$line" | awk '{print $2}')"
+
+  # Expand ~ and {project}
+  host_path="$(echo "$host_path" | sed "s|^~|$HOME|" | sed "s|{project}|$HOST_PROJECT_ENCODED|g")"
+
+  # Derive container path: replace $HOME with /home/claude
+  container_path="$(echo "$host_path" | sed "s|^$HOME|/home/claude|")"
+
+  mkdir -p "$host_path"
+
+  if [ "$mode" = "ro" ]; then
+    EXTRA_MOUNTS+=(--volume "$host_path:$container_path:ro")
+  else
+    EXTRA_MOUNTS+=(--volume "$host_path:$container_path")
+  fi
+done < "$MOUNTS_CONF"
+
 TTY_FLAG="-it"
 if [ ! -t 0 ]; then
   TTY_FLAG="-i"
@@ -81,7 +132,9 @@ container run $TTY_FLAG --rm \
   --volume "$CREDS_DIR:/home/claude/.claude" \
   --volume "$HOME/.claude:/tmp/.claude-host:ro" \
   $WORKTREE_MOUNT \
+  "${EXTRA_MOUNTS[@]}" \
   --env TERM \
+  --env HOST_CWD="$(pwd)" \
   --env GIT_AUTHOR_NAME="$(git config user.name)" \
   --env GIT_AUTHOR_EMAIL="$(git config user.email)" \
   --env GIT_COMMITTER_NAME="$(git config user.name)" \
